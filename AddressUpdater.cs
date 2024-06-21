@@ -45,6 +45,8 @@ public sealed class AddressUpdater: IHostedService {
                     ttl = 120,
                 }), Encoding.UTF8, "application/json")
             ).ConfigureAwait(false);
+
+            response.EnsureSuccessStatusCode();
         } catch (Exception e) {
             this.log.LogError(e, "Failed to update IP address: {Error}", e);
         }
