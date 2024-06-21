@@ -5,22 +5,27 @@ using System.Text;
 using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Options;
 
 public sealed class AddressUpdater: IHostedService {
     readonly HttpClient zonesAPI;
+    readonly string zoneID;
+    readonly string recordID;
     readonly ILogger<AddressUpdater> log;
 
-    public AddressUpdater(string email, string apiKey, ILogger<AddressUpdater> log) {
-        ArgumentException.ThrowIfNullOrEmpty(apiKey, nameof(apiKey));
+    public AddressUpdater(IOptions<AddressUpdaterOptions> options, ILogger<AddressUpdater> log) {
+        var opt = options?.Value ?? throw new ArgumentNullException(nameof(options));
         this.log = log ?? throw new ArgumentNullException(nameof(log));
 
         this.zonesAPI = new() {
             BaseAddress = new("https://api.cloudflare.com/client/v4/zones"),
             DefaultRequestHeaders = {
-                Authorization = new("Bearer " + apiKey),
+                Authorization = new("Bearer " + opt.ApiKey),
             },
         };
-        this.zonesAPI.DefaultRequestHeaders.Add("X-Auth-Email", email);
+        this.zonesAPI.DefaultRequestHeaders.Add("X-Auth-Email", opt.Email);
+        this.zoneID = opt.ZoneID ?? throw new ArgumentNullException(nameof(opt.ZoneID));
+        this.recordID = opt.RecordID ?? throw new ArgumentNullException(nameof(opt.RecordID));
     }
 
     async Task OnAddressChanged() {
@@ -32,7 +37,7 @@ public sealed class AddressUpdater: IHostedService {
             }
 
             var response = await this.zonesAPI.PatchAsync(
-                $"{ZONE_ID}/dns_records/{RECORD_ID}",
+                $"{this.zoneID}/dns_records/{this.recordID}",
                 new StringContent(JsonSerializer.Serialize(new {
                     type = "AAAA",
                     name = "example.com",
