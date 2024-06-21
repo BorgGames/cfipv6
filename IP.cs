@@ -1,5 +1,6 @@
 namespace cfipv6;
 
+using System.Net;
 using System.Net.NetworkInformation;
 
 public static class IP {
@@ -13,11 +14,15 @@ public static class IP {
                     if (address.Address.IsIPv6LinkLocal || address.Address.IsIPv6SiteLocal)
                         continue;
 
-                    #warning filter out temporary addresses
+                    if (address.Address.IsIPv6LinkLocal || address.Address.IsIPv6SiteLocal || IPAddress.IsLoopback(address.Address))
+                        continue;
+
+#warning TODO: filter out temporary addresses
                     return address;
                 }
             }
         }
+
         return null;
     }
 }
