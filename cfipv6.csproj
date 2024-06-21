@@ -4,6 +4,7 @@
     <TargetFramework>net8.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
+    <Version>0.1</Version>
     <UserSecretsId>dotnet-cfipv6-15e71a33-1d82-47f5-8650-353aa617c7bd</UserSecretsId>
   </PropertyGroup>
 
