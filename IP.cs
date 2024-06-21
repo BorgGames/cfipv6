@@ -11,9 +11,6 @@ public static class IP {
 
             foreach (var address in adapter.GetIPProperties().UnicastAddresses) {
                 if (address.Address.AddressFamily == System.Net.Sockets.AddressFamily.InterNetworkV6) {
-                    if (address.Address.IsIPv6LinkLocal || address.Address.IsIPv6SiteLocal)
-                        continue;
-
                     if (address.Address.IsIPv6LinkLocal || address.Address.IsIPv6SiteLocal || IPAddress.IsLoopback(address.Address))
                         continue;
 
