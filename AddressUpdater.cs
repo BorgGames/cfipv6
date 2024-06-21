@@ -20,7 +20,7 @@ public sealed class AddressUpdater: IHostedService {
         this.zonesAPI = new() {
             BaseAddress = new("https://api.cloudflare.com/client/v4/zones"),
             DefaultRequestHeaders = {
-                Authorization = new("Bearer " + opt.ApiKey),
+                Authorization = new("Bearer", opt.ApiKey),
             },
         };
         this.zonesAPI.DefaultRequestHeaders.Add("X-Auth-Email", opt.Email);
